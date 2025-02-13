@@ -1,0 +1,14 @@
+﻿using AnimeReviewWebApp.Dto;
+using AnimeReviewWebApp.Models;
+using AutoMapper;
+
+namespace AnimeReviewWebApp.Helper
+{
+    public class MappingProfiles : Profile
+    {
+        public MappingProfiles()
+        {
+            CreateMap<Anime, AnimeDto>();
+        }
+    }
+}
