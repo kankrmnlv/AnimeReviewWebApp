@@ -71,5 +71,38 @@ namespace AnimeReviewWebApp.Controllers
 
             return Ok(reviews);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateReviewer([FromBody] ReviewerDto createReviewer)
+        {
+            if (createReviewer == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var reviewer = _reviewerInterface.GetReviewers().Where(r => r.LastName.Trim().ToUpper() == createReviewer.LastName.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (reviewer != null)
+            {
+                ModelState.AddModelError("", "Reviewer already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var reviewerMap = _mapper.Map<Reviewer>(createReviewer);
+            if (!_reviewerInterface.CreateReviewer(reviewerMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
     }
 }
