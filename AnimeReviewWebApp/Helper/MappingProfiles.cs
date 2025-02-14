@@ -11,6 +11,8 @@ namespace AnimeReviewWebApp.Helper
             CreateMap<Anime, AnimeDto>();
             CreateMap<Genre, GenreDto>();
             CreateMap<Country, CountryDto>();
+            CreateMap<Studio, StudioDto>();
+            CreateMap<Review, ReviewDto>();
         }
     }
 }

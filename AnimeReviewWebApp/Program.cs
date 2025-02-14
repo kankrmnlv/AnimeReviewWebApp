@@ -19,6 +19,8 @@ namespace AnimeReviewWebApp
             builder.Services.AddScoped<IAnimeInterface, AnimeRepository>();
             builder.Services.AddScoped<IGenreInterface, GenreRepository>();
             builder.Services.AddScoped<ICountryInterface, CountryRepository>();
+            builder.Services.AddScoped<IStudioInterface, StudioRepository>();
+            builder.Services.AddScoped<IReviewInterface, ReviewRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
