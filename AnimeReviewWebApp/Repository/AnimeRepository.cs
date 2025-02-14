@@ -35,14 +35,14 @@ namespace AnimeReviewWebApp.Repository
 
         public decimal GetAnimeRating(int animId)
         {
-            var review = _context.Reviews.Where(a => a.Id == animId);
+            var review = _context.Reviews.Where(a => a.Anime.Id == animId);
 
             if(review.Count() <= 0)
             {
                 return 0;
             }
 
-            return ((decimal)review.Sum(r => r.Rating) / review.Count());
+            return (decimal)review.Sum(r => r.Rating) / review.Count();
         }
     }
 }
