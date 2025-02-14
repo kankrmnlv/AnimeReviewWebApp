@@ -13,11 +13,13 @@ namespace AnimeReviewWebApp.Controllers
     {
         private readonly IStudioInterface _studioInterface;
         private readonly IMapper _mapper;
+        private readonly ICountryInterface _countryInterface;
 
-        public StudioController(IStudioInterface studioInterface, IMapper mapper)
+        public StudioController(IStudioInterface studioInterface, IMapper mapper, ICountryInterface countryInterface)
         {
             _studioInterface = studioInterface;
             _mapper = mapper;
+            _countryInterface = countryInterface;
         }
 
         [HttpGet]
@@ -72,6 +74,42 @@ namespace AnimeReviewWebApp.Controllers
             }
 
             return Ok(studio);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateStudio([FromQuery] int countryId, [FromBody] StudioDto createStudio)
+        {
+            if (createStudio == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var studio = _studioInterface.GetStudios().Where(s => s.Name.Trim().ToUpper() == createStudio.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (studio != null)
+            {
+                ModelState.AddModelError("", "Studio already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var studioMap = _mapper.Map<Studio>(createStudio);
+
+            studioMap.Country = _countryInterface.GetCountry(countryId);
+
+            if (!_studioInterface.CreateStudio(studioMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
         }
     }
 }

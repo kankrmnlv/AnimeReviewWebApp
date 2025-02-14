@@ -11,6 +11,13 @@ namespace AnimeReviewWebApp.Repository
         {
             _context = context;
         }
+
+        public bool CreateStudio(Studio studio)
+        {
+            _context.Add(studio);
+            return Save();
+        }
+
         public ICollection<Anime> GetAnimeByStudio(int studioId)
         {
             return _context.AnimeStudios.Where(s => s.Studio.Id == studioId).Select(a => a.Anime).ToList();
@@ -29,6 +36,12 @@ namespace AnimeReviewWebApp.Repository
         public ICollection<Studio> GetStudios()
         {
             return _context.Studios.ToList();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
         public bool StudioExists(int studioId)

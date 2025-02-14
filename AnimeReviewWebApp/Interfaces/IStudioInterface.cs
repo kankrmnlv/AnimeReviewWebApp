@@ -9,5 +9,7 @@ namespace AnimeReviewWebApp.Interfaces
         ICollection<Studio> GetStudioOfAnime(int animId);
         ICollection<Anime> GetAnimeByStudio(int studioId);
         bool StudioExists(int studioId);
+        bool CreateStudio(Studio studio);
+        bool Save();
     }
 }

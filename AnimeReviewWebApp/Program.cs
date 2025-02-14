@@ -2,6 +2,8 @@ using AnimeReviewWebApp.Data;
 using AnimeReviewWebApp.Interfaces;
 using AnimeReviewWebApp.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.Xml;
+using System.Text.Json.Serialization;
 
 namespace AnimeReviewWebApp
 {
@@ -15,12 +17,14 @@ namespace AnimeReviewWebApp
 
             builder.Services.AddControllers();
             builder.Services.AddTransient<Seed>();
+            builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IAnimeInterface, AnimeRepository>();
             builder.Services.AddScoped<IGenreInterface, GenreRepository>();
             builder.Services.AddScoped<ICountryInterface, CountryRepository>();
             builder.Services.AddScoped<IStudioInterface, StudioRepository>();
             builder.Services.AddScoped<IReviewInterface, ReviewRepository>();
+            builder.Services.AddScoped<IReviewerInterface, ReviewerRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

@@ -67,5 +67,39 @@ namespace AnimeReviewWebApp.Controllers
 
             return Ok(anime);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateGenre([FromBody] GenreDto createGenre)
+        {
+            if(createGenre == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var genre = _genreInterface.GetGenres().Where(g => g.Name.Trim().ToUpper() == createGenre.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if(genre != null)
+            {
+                ModelState.AddModelError("", "Genre already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var genreMap = _mapper.Map<Genre>(createGenre);
+            if (!_genreInterface.CreateGenre(genreMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
+
     }
 }
