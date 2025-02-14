@@ -9,6 +9,8 @@ namespace AnimeReviewWebApp.Helper
         public MappingProfiles()
         {
             CreateMap<Anime, AnimeDto>();
+            CreateMap<Genre, GenreDto>();
+            CreateMap<Country, CountryDto>();
         }
     }
 }
