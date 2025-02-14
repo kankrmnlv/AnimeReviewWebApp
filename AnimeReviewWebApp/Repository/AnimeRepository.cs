@@ -44,5 +44,37 @@ namespace AnimeReviewWebApp.Repository
 
             return (decimal)review.Sum(r => r.Rating) / review.Count();
         }
+
+        public bool CreateAnime(int studioId, int genreId, Anime anime)
+        {
+            var animeStudioEntity = _context.Studios.Where(a => a.Id == studioId).FirstOrDefault();
+            var genre = _context.Genres.Where(a => a.Id == genreId).FirstOrDefault();
+
+            var animeStudio = new AnimeStudio
+            {
+                Studio = animeStudioEntity,
+                Anime = anime,
+            };
+
+            _context.Add(animeStudio);
+
+            var animeGenre = new AnimeGenre
+            {
+                Genre = genre,
+                Anime = anime
+            };
+
+            _context.Add(animeGenre);
+
+            _context.Add(anime);
+
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

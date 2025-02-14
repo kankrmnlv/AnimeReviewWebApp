@@ -12,11 +12,15 @@ namespace AnimeReviewWebApp.Controllers
     {
         private readonly IReviewInterface _reviewInterface;
         private readonly IMapper _mapper;
+        private readonly IReviewerInterface _reviewerInterface;
+        private readonly IAnimeInterface _animeInterface;
 
-        public ReviewController(IReviewInterface reviewInterface, IMapper mapper)
+        public ReviewController(IReviewInterface reviewInterface, IMapper mapper, IReviewerInterface reviewerInterface, IAnimeInterface animeInterface)
         {
             _reviewInterface = reviewInterface;
             _mapper = mapper;
+            _reviewerInterface = reviewerInterface;
+            _animeInterface = animeInterface;
         }
 
         [HttpGet]
@@ -66,6 +70,43 @@ namespace AnimeReviewWebApp.Controllers
             }
 
             return Ok(reviews);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateReview([FromQuery] int reviewerId, [FromQuery] int animId, [FromBody] ReviewDto createReview)
+        {
+            if (createReview == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var review = _reviewInterface.GetReviews().Where(r => r.Title.Trim().ToUpper() == createReview.Title.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (review != null)
+            {
+                ModelState.AddModelError("", "Review already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var reviewMap = _mapper.Map<Review>(createReview);
+
+            reviewMap.Anime = _animeInterface.GetAnime(animId);
+            reviewMap.Reviewer = _reviewerInterface.GetReviewer(reviewerId);
+
+            if (!_reviewInterface.CreateReview(reviewMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
         }
     }
 }

@@ -9,5 +9,7 @@ namespace AnimeReviewWebApp.Interfaces
         Anime GetAnime(string title);
         decimal GetAnimeRating(int animId);
         bool AnimeExists(int animId);
+        bool CreateAnime(int studioId, int genreId, Anime anime);
+        bool Save();
     }
 }

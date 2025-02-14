@@ -71,5 +71,39 @@ namespace AnimeReviewWebApp.Controllers
 
             return Ok(rating);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateAnime([FromQuery] int studioId, [FromQuery] int genreId, [FromBody] AnimeDto createAnime)
+        {
+            if (createAnime == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var anime = _animeInterface.GetAnimeList().Where(a => a.Title.Trim().ToUpper() == createAnime.Title.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (anime != null)
+            {
+                ModelState.AddModelError("", "Anime already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var animeMap = _mapper.Map<Anime>(createAnime);
+
+            if (!_animeInterface.CreateAnime(studioId, genreId, animeMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
     }
 }
