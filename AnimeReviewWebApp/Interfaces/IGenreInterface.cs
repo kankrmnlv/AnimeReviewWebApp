@@ -9,6 +9,7 @@ namespace AnimeReviewWebApp.Interfaces
         ICollection<Anime> GetAnimeByGenre(int genreId);
         bool GenreExists(int id);
         bool CreateGenre(Genre genre);
+        bool UpdateGenre(Genre genre);
         bool Save();
     }
 }

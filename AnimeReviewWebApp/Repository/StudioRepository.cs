@@ -48,5 +48,11 @@ namespace AnimeReviewWebApp.Repository
         {
             return _context.Studios.Any(s => s.Id == studioId);
         }
+
+        public bool UpdateStudio(Studio studio)
+        {
+            _context.Update(studio);
+            return Save();
+        }
     }
 }

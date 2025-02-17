@@ -70,11 +70,37 @@ namespace AnimeReviewWebApp.Repository
 
             return Save();
         }
+        public bool UpdateAnime(int studioId, int genreId, Anime anime)
+        {
+            var animeStudioEntity = _context.Studios.Where(a => a.Id == studioId).FirstOrDefault();
+            var genre = _context.Genres.Where(a => a.Id == genreId).FirstOrDefault();
+
+            var animeStudio = new AnimeStudio
+            {
+                Studio = animeStudioEntity,
+                Anime = anime,
+            };
+
+            _context.Update(animeStudio);
+
+            var animeGenre = new AnimeGenre
+            {
+                Genre = genre,
+                Anime = anime
+            };
+
+            _context.Update(animeGenre);
+
+            _context.Update(anime);
+
+            return Save();
+        }
 
         public bool Save()
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
     }
 }

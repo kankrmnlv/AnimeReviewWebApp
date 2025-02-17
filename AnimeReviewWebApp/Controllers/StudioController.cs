@@ -111,5 +111,42 @@ namespace AnimeReviewWebApp.Controllers
 
             return Ok("Successfully created");
         }
+
+        [HttpPut("{studioId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateStudio(int studioId, [FromBody] StudioDto updatedStudio)
+        {
+            if (updatedStudio == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (studioId != updatedStudio.Id)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_studioInterface.StudioExists(studioId))
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var studioMap = _mapper.Map<Studio>(updatedStudio);
+
+            if (!_studioInterface.UpdateStudio(studioMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating the studio");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

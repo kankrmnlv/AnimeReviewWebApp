@@ -101,5 +101,41 @@ namespace AnimeReviewWebApp.Controllers
             return Ok("Successfully created");
         }
 
+        [HttpPut("{genreId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateGenre(int genreId, [FromBody] GenreDto updatedGenre)
+        {
+            if(updatedGenre == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if(genreId != updatedGenre.Id)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_genreInterface.GenreExists(genreId))
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var genreMap = _mapper.Map<Genre>(updatedGenre);
+
+            if (!_genreInterface.UpdateGenre(genreMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating the genre");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }
