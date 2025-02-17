@@ -12,10 +12,13 @@ namespace AnimeReviewWebApp.Controllers
     {
         private readonly IAnimeInterface _animeInterface;
         private readonly IMapper _mapper;
-        public AnimeController(IAnimeInterface animeInterface, IMapper mapper)
+        private readonly IReviewInterface _reviewInterface;
+
+        public AnimeController(IAnimeInterface animeInterface, IMapper mapper, IReviewInterface reviewInterface)
         {
             _animeInterface = animeInterface;
             _mapper = mapper;
+            _reviewInterface = reviewInterface;
         }
 
         [HttpGet]
@@ -138,6 +141,39 @@ namespace AnimeReviewWebApp.Controllers
             {
                 ModelState.AddModelError("", "Something went wrong updating the anime");
                 return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{animeId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteAnime(int animeId)
+        {
+            if (!_animeInterface.AnimeExists(animeId))
+            {
+                return NotFound(ModelState);
+            }
+
+            var reviewsToDelete = _reviewInterface.GetReviewsOfAnime(animeId);
+            var animeToDelete = _animeInterface.GetAnime(animeId);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_reviewInterface.DeleteReviews(reviewsToDelete.ToList()))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting reviews");
+
+            }
+
+            if (!_animeInterface.DeleteAnime(animeToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting the anime");
             }
 
             return NoContent();

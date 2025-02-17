@@ -145,5 +145,31 @@ namespace AnimeReviewWebApp.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{reviewId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteReview(int reviewId)
+        {
+            if (!_reviewInterface.ReviewExists(reviewId))
+            {
+                return NotFound(ModelState);
+            }
+
+            var reviewToDelete = _reviewInterface.GetReview(reviewId);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_reviewInterface.DeleteReview(reviewToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting the review");
+            }
+
+            return NoContent();
+        }
     }
 }

@@ -18,6 +18,12 @@ namespace AnimeReviewWebApp.Repository
             return Save();
         }
 
+        public bool DeleteStudio(Studio studio)
+        {
+            _context.Remove(studio);
+            return Save();
+        }
+
         public ICollection<Anime> GetAnimeByStudio(int studioId)
         {
             return _context.AnimeStudios.Where(s => s.Studio.Id == studioId).Select(a => a.Anime).ToList();

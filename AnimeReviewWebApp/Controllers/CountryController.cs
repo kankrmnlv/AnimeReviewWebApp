@@ -137,5 +137,31 @@ namespace AnimeReviewWebApp.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{countryId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteCountry(int countryId)
+        {
+            if (!_countryInterface.CountryExists(countryId))
+            {
+                return NotFound(ModelState);
+            }
+
+            var countryToDelete = _countryInterface.GetCountry(countryId);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_countryInterface.DeleteCountry(countryToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting the country");
+            }
+
+            return NoContent();
+        }
     }
 }

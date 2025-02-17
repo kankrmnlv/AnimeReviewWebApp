@@ -141,5 +141,31 @@ namespace AnimeReviewWebApp.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{reviewerId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteReviewer(int reviewerId)
+        {
+            if (!_reviewerInterface.ReviewerExists(reviewerId))
+            {
+                return NotFound(ModelState);
+            }
+
+            var reviewerToDelete = _reviewerInterface.GetReviewer(reviewerId);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_reviewerInterface.DeleteReviewer(reviewerToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting the reviewer");
+            }
+
+            return NoContent();
+        }
     }
 }

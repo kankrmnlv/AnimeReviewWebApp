@@ -11,6 +11,7 @@ namespace AnimeReviewWebApp.Interfaces
         bool AnimeExists(int animId);
         bool CreateAnime(int studioId, int genreId, Anime anime);
         bool UpdateAnime(int studioId, int genreId, Anime anime);
+        bool DeleteAnime(Anime anime);
         bool Save();
     }
 }

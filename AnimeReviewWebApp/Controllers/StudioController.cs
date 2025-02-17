@@ -148,5 +148,31 @@ namespace AnimeReviewWebApp.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{studioId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteStudio(int studioId)
+        {
+            if (!_studioInterface.StudioExists(studioId))
+            {
+                return NotFound(ModelState);
+            }
+
+            var studioToDelete = _studioInterface.GetStudio(studioId);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_studioInterface.DeleteStudio(studioToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting the studio");
+            }
+
+            return NoContent();
+        }
     }
 }

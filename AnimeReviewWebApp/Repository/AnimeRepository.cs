@@ -102,5 +102,10 @@ namespace AnimeReviewWebApp.Repository
             return saved > 0 ? true : false;
         }
 
+        public bool DeleteAnime(Anime anime)
+        {
+            _context.Remove(anime);
+            return Save();
+        }
     }
 }

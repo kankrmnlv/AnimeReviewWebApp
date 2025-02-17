@@ -137,5 +137,31 @@ namespace AnimeReviewWebApp.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{genreId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteGenre(int genreId)
+        {
+            if (!_genreInterface.GenreExists(genreId))
+            {
+                return NotFound(ModelState);
+            }
+
+            var genreToDelete = _genreInterface.GetGenre(genreId);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_genreInterface.DeleteGenre(genreToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting the genre");
+            }
+
+            return NoContent();
+        }
     }
 }
