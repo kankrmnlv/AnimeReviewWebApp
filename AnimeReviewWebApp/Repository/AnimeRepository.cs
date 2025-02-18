@@ -1,4 +1,5 @@
 ﻿using AnimeReviewWebApp.Data;
+using AnimeReviewWebApp.Dto;
 using AnimeReviewWebApp.Interfaces;
 using AnimeReviewWebApp.Models;
 
@@ -106,6 +107,11 @@ namespace AnimeReviewWebApp.Repository
         {
             _context.Remove(anime);
             return Save();
+        }
+
+        public Anime GetAnimeTrimToUpper(AnimeDto animeDto)
+        {
+            return GetAnimeList().Where(a => a.Title.Trim().ToUpper() == animeDto.Title.TrimEnd().ToUpper()).FirstOrDefault();
         }
     }
 }

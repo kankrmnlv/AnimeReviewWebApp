@@ -85,7 +85,7 @@ namespace AnimeReviewWebApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var anime = _animeInterface.GetAnimeList().Where(a => a.Title.Trim().ToUpper() == createAnime.Title.TrimEnd().ToUpper()).FirstOrDefault();
+            var anime = _animeInterface.GetAnimeTrimToUpper(createAnime);
 
             if (anime != null)
             {

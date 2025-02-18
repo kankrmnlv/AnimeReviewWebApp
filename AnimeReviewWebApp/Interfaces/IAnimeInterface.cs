@@ -1,4 +1,5 @@
-﻿using AnimeReviewWebApp.Models;
+﻿using AnimeReviewWebApp.Dto;
+using AnimeReviewWebApp.Models;
 
 namespace AnimeReviewWebApp.Interfaces
 {
@@ -7,6 +8,7 @@ namespace AnimeReviewWebApp.Interfaces
         ICollection<Anime> GetAnimeList();
         Anime GetAnime(int id);
         Anime GetAnime(string title);
+        Anime GetAnimeTrimToUpper(AnimeDto animeDto);
         decimal GetAnimeRating(int animId);
         bool AnimeExists(int animId);
         bool CreateAnime(int studioId, int genreId, Anime anime);
